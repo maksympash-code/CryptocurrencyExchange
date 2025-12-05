@@ -45,7 +45,8 @@ dependencies {
     implementation(libs.retrofit.v300)
     implementation(libs.converter.gson)
 
-    // Coroutines (для suspend, viewModelScope і т.д.)
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.core.ktx)
