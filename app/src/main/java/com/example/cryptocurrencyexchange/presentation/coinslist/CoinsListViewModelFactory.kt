@@ -6,14 +6,18 @@ import com.example.cryptocurrencyexchange.domain.usecases.GetTopCoinsUseCase
 import com.example.cryptocurrencyexchange.domain.usecases.RefreshTopCoinsUseCase
 
 class CoinsListViewModelFactory(
-    private val getTopCoins: GetTopCoinsUseCase,
-    private val refreshTopCoins: RefreshTopCoinsUseCase
-): ViewModelProvider.Factory {
-    @Suppress
+    private val getTopCoinsUseCase: GetTopCoinsUseCase,
+    private val refreshTopCoinsUseCase: RefreshTopCoinsUseCase
+) : ViewModelProvider.Factory {
+
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(CoinsListViewModel::class.java)){
-            return CoinsListViewModel(getTopCoins, refreshTopCoins) as T
+        if (modelClass.isAssignableFrom(CoinsListViewModel::class.java)) {
+            return CoinsListViewModel(
+                getTopCoins = getTopCoinsUseCase,
+                refreshTopCoins = refreshTopCoinsUseCase
+            ) as T
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        throw IllegalArgumentException("Unknown ViewModel class: $modelClass")
     }
 }

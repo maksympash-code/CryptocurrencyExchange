@@ -22,10 +22,9 @@ class RepositoryImpl(
         }
     }
 
-    override fun getCoinDetails(symbol: String): Flow<CoinDetails> {
-        return dao.getCoin(symbol).map {
-            entity -> entity.toDomainDetails()
-        }
+    override fun getCoinDetails(id: String): Flow<CoinDetails> {
+        return dao.getCoinById(id).map { entity ->
+            entity.toDomainDetails() }
     }
 
     override suspend fun refreshTopCoins() {

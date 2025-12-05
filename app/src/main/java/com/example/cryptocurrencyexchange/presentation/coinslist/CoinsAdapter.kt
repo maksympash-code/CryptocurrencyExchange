@@ -7,23 +7,22 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptocurrencyexchange.R
-import com.example.cryptocurrencyexchange.domain.Coin
 import com.example.cryptocurrencyexchange.presentation.CoinUi
 import com.squareup.picasso.Picasso
 
 class CoinsAdapter(
     private val onItemClick: (CoinUi) -> Unit
-): RecyclerView.Adapter<CoinsAdapter.CoinViewHolder>() {
+) : RecyclerView.Adapter<CoinsAdapter.CoinViewHolder>() {
 
     private val items = mutableListOf<CoinUi>()
 
-    fun submit(newItems: List<CoinUi>){
+    fun submit(newItems: List<CoinUi>) {
         items.clear()
         items.addAll(newItems)
         notifyDataSetChanged()
     }
 
-    class CoinViewHolder(view: View): RecyclerView.ViewHolder(view){
+    class CoinViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivIcon: ImageView = view.findViewById(R.id.ivIcon)
         val tvName: TextView = view.findViewById(R.id.tvName)
         val tvSymbol: TextView = view.findViewById(R.id.tvSymbol)
@@ -34,7 +33,7 @@ class CoinsAdapter(
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int,
+        viewType: Int
     ): CoinViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_coin, parent, false)
@@ -43,9 +42,10 @@ class CoinsAdapter(
 
     override fun onBindViewHolder(
         holder: CoinViewHolder,
-        position: Int,
+        position: Int
     ) {
         val item = items[position]
+
         holder.tvName.text = item.name
         holder.tvSymbol.text = item.symbol
         holder.tvPrice.text = item.priceText
@@ -55,8 +55,6 @@ class CoinsAdapter(
         if (item.imageUrl.isNotEmpty()) {
             Picasso.get()
                 .load(item.imageUrl)
-                .placeholder(R.drawable.ic_launcher_foreground)
-                .error(R.drawable.ic_launcher_foreground)
                 .into(holder.ivIcon)
         } else {
             holder.ivIcon.setImageDrawable(null)
@@ -68,8 +66,4 @@ class CoinsAdapter(
     }
 
     override fun getItemCount(): Int = items.size
-
-
-
-
 }

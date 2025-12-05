@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 class GetCoinDetailsUseCase(
     private val repository: Repository
 ) {
-    operator fun invoke(symbol: String): Flow<CoinDetails> = repository.getCoinDetails(symbol)
+    operator fun invoke(id: String): Flow<CoinDetails> = repository.getCoinDetails(id)
 }
