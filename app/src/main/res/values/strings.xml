@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">CryptocurrencyExchange</string>
+    <string name="cryptocurrency_exchange">Cryptocurrency Exchange</string>
+    <string name="coin_icon">Coin icon</string>
+    <string name="bitcoin">Bitcoin</string>
+    <string name="btc">BTC</string>
+    <string name="price_43547_04_usd">Price: 43547.04 USD</string>
+    <string name="_24h_43255_67_44245_15">24h: 43255.67 - 44245.15</string>
+    <string name="last_update_10_15">Last update: 10:15</string>
 </resources>
