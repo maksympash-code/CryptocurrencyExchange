@@ -5,16 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.cryptocurrencyexchange.R
 import com.example.cryptocurrencyexchange.presentation.CoinUi
 
 class CoinDetailsActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -25,20 +20,21 @@ class CoinDetailsActivity : ComponentActivity() {
         val lastUpdateText = intent.getStringExtra(EXTRA_LAST_UPDATE) ?: ""
         val imageUrl = intent.getStringExtra(EXTRA_IMAGE_URL) ?: ""
 
-        val uiModel = CoinUi (
+        val uiModel = CoinUi(
             name = name,
             symbol = symbol,
             priceText = priceText,
             dayRangeText = dayRangeText,
             lastUpdateText = lastUpdateText,
-            imageUrl = imageUrl,
+            imageUrl = imageUrl
         )
 
         setContent {
             MaterialTheme {
-                Surface {
-                    CoinDetailsScreen(coin = uiModel, onBack = { finish() })
-                }
+                CoinDetailsScreen(
+                    coin = uiModel,
+                    onBackClick = { finish() }
+                )
             }
         }
     }
