@@ -15,7 +15,7 @@ interface CoinDao {
     fun getCoins(): Flow<List<CoinEntity>>
 
     @Query("SELECT * FROM coins WHERE id = :id LIMIT 1")
-    fun getCoinById(id: String): Flow<CoinEntity>
+    fun getCoinById(id: String): Flow<CoinEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(coins: List<CoinEntity>)

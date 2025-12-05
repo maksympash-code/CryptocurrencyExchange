@@ -2,136 +2,254 @@ package com.example.cryptocurrencyexchange.presentation.coindetails
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.BoxWithConstraints
 import coil.compose.AsyncImage
 import com.example.cryptocurrencyexchange.presentation.CoinUi
 
 @Composable
 fun CoinDetailsScreen(
-    coin: CoinUi,
-    onBack: () -> Unit
+    coin: CoinUi?,
+    onBack: () -> Unit,
 ) {
-    Box(
+    if (coin == null) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFF6EFF7)),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = "Loading...", style = MaterialTheme.typography.bodyLarge)
+        }
+        return
+    }
+
+    val (minText, maxText) = remember(coin.dayRangeText) {
+        val raw = coin.dayRangeText.removePrefix("24h:").trim()
+        val parts = raw.split("-")
+        val min = parts.getOrNull(0)?.trim().orEmpty()
+        val max = parts.getOrNull(1)?.trim().orEmpty()
+        min to max
+    }
+
+    val priceValue = remember(coin.priceText) {
+        coin.priceText.removePrefix("Price:").trim()
+    }
+
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp)
+            .background(Color(0xFFF6EFF7))
     ) {
-        // Основний контент (картка з даними)
+        val isLandscape = maxWidth > maxHeight
+
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter),
+                .fillMaxSize()
+                .padding(horizontal = 16.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-
-                    // Картинка монети
-                    AsyncImage(
-                        model = coin.imageUrl,
-                        contentDescription = "${coin.name} logo",
-                        modifier = Modifier
-                            .size(96.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Назва по центру
-                    Text(
-                        text = "${coin.symbol}  ${coin.name}",
-                        style = MaterialTheme.typography.headlineSmall,
+                Text(
+                    text = coin.symbol,
+                    style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
+                        fontSize = 26.sp
                     )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Ціна
-                    Text(
-                        text = coin.priceText,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = coin.name,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontSize = 18.sp
                     )
+                )
+            }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+            val cardModifier = if (isLandscape) {
+                Modifier
+                    .fillMaxWidth()
+                    .height(260.dp)
+            } else {
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            }
 
-                    // Діапазон за 24 години
-                    Text(
-                        text = coin.dayRangeText,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+            Card(
+                modifier = cardModifier,
+                shape = RoundedCornerShape(32.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFFE6E0EB)
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                if (isLandscape) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(24.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if (coin.imageUrl.isNotEmpty()) {
+                            AsyncImage(
+                                model = coin.imageUrl,
+                                contentDescription = coin.name,
+                                modifier = Modifier
+                                    .size(96.dp)
+                                    .padding(end = 16.dp)
+                            )
+                        }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text(
+                                text = coin.name,
+                                style = MaterialTheme.typography.headlineSmall.copy(
+                                    fontWeight = FontWeight.SemiBold
+                                ),
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
 
-                    // Останнє оновлення
-                    Text(
-                        text = coin.lastUpdateText,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                            InfoRows(
+                                priceValue = priceValue,
+                                minText = minText,
+                                maxText = maxText,
+                                lastUpdate = coin.lastUpdateText
+                            )
+                        }
+                    }
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        if (coin.imageUrl.isNotEmpty()) {
+                            AsyncImage(
+                                model = coin.imageUrl,
+                                contentDescription = coin.name,
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .padding(bottom = 16.dp)
+                            )
+                        }
+
+                        Text(
+                            text = coin.name,
+                            style = MaterialTheme.typography.headlineSmall.copy(
+                                fontWeight = FontWeight.SemiBold
+                            ),
+                            modifier = Modifier.padding(bottom = 24.dp)
+                        )
+
+                        InfoRows(
+                            priceValue = priceValue,
+                            minText = minText,
+                            maxText = maxText,
+                            lastUpdate = coin.lastUpdateText
+                        )
+                    }
                 }
             }
-        }
 
-        // Кнопка Back внизу екрана, широка й помітна
-        Button(
-            onClick = onBack,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            Text(text = "Back")
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = onBack,
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF5E35B1),
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .width(160.dp)
+                    .height(50.dp)
+            ) {
+                Text(text = "Back", fontSize = 18.sp)
+            }
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-private fun CoinDetailsScreenPreview() {
-    val sample = CoinUi(
-        id = "btc",
-        name = "Bitcoin",
-        symbol = "BTC",
-        priceText = "Price: 43,547.04 USD",
-        dayRangeText = "24h: 43,255.67 - 44,245.15",
-        lastUpdateText = "Last update: 08:07",
-        imageUrl = "https://www.cryptocompare.com/media/37746251/btc.png"
-    )
-    MaterialTheme {
-        CoinDetailsScreen(
-            coin = sample,
-            onBack = {}
+private fun InfoRows(
+    priceValue: String,
+    minText: String,
+    maxText: String,
+    lastUpdate: String,
+) {
+    val cleanLastUpdate = lastUpdate.removePrefix("Last update:").trim()
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = "Coin price:", style = MaterialTheme.typography.bodyLarge)
+        Text(text = priceValue, style = MaterialTheme.typography.bodyLarge)
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = "min 24 hours:", style = MaterialTheme.typography.bodyLarge)
+        Text(
+            text = if (minText.isNotEmpty()) minText else "-",
+            style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFFD32F2F))
         )
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = "max 24 hours:", style = MaterialTheme.typography.bodyLarge)
+        Text(
+            text = if (maxText.isNotEmpty()) maxText else "-",
+            style = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF388E3C))
+        )
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = "Last update:", style = MaterialTheme.typography.bodyLarge)
+        Text(text = cleanLastUpdate, style = MaterialTheme.typography.bodyLarge)
     }
 }

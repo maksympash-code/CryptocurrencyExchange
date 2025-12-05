@@ -1,5 +1,6 @@
 package com.example.cryptocurrencyexchange.presentation.coinslist
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,9 +47,17 @@ class CoinsListViewModel(
 
         viewModelScope.launch {
             _uiState.value = cur.copy(isLoading = true)
-            refreshTopCoins()
-            val updated = _uiState.value ?: cur
-            _uiState.value = updated.copy(isLoading = false)
+            try {
+                refreshTopCoins()
+            } catch (e: Exception) {
+                android.util.Log.e(
+                    "CoinsListViewModel",
+                    "refreshTopCoins() failed: ${e.javaClass.simpleName} - ${e.message}",
+                    e
+                )
+            } finally {
+                _uiState.value = _uiState.value?.copy(isLoading = false)
+            }
         }
     }
 

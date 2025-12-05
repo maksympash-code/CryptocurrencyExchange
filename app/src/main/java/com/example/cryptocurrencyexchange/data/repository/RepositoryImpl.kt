@@ -10,6 +10,7 @@ import com.example.cryptocurrencyexchange.domain.Coin
 import com.example.cryptocurrencyexchange.domain.CoinDetails
 import com.example.cryptocurrencyexchange.domain.repository.Repository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 
 class RepositoryImpl(
@@ -23,8 +24,9 @@ class RepositoryImpl(
     }
 
     override fun getCoinDetails(id: String): Flow<CoinDetails> {
-        return dao.getCoinById(id).map { entity ->
-            entity.toDomainDetails() }
+        return dao.getCoinById(id)
+            .filterNotNull()
+            .map { entity -> entity.toDomainDetails() }
     }
 
     override suspend fun refreshTopCoins() {
