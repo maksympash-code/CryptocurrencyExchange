@@ -1,6 +1,7 @@
 package com.example.cryptocurrencyexchange.presentation
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,5 +52,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun render(state: CoinsListUiState) {
         coinsAdapter.submit(state.coins)
+
+        if (state.errorMessage != null) {
+            Toast.makeText(this, state.errorMessage, Toast.LENGTH_SHORT).show()
+            viewModel.onErrorShown()
+        }
     }
 }

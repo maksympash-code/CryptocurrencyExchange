@@ -11,6 +11,7 @@ import com.example.cryptocurrencyexchange.domain.usecases.RefreshTopCoinsUseCase
 import com.example.cryptocurrencyexchange.presentation.CoinUi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -46,18 +47,35 @@ class CoinsListViewModel(
         if (cur.isLoading) return
 
         viewModelScope.launch {
-            _uiState.value = cur.copy(isLoading = true)
+            // скидаємо стару помилку, якщо була
+            _uiState.value = cur.copy(isLoading = true, errorMessage = null)
+
             try {
                 refreshTopCoins()
+                _uiState.value = _uiState.value?.copy(isLoading = false)
             } catch (e: Exception) {
-                android.util.Log.e(
+                Log.e(
                     "CoinsListViewModel",
                     "refreshTopCoins() failed: ${e.javaClass.simpleName} - ${e.message}",
                     e
                 )
-            } finally {
-                _uiState.value = _uiState.value?.copy(isLoading = false)
+
+                val msg = when (e) {
+                    is UnknownHostException -> "No internet connection"
+                    else -> "Failed to load data"
+                }
+
+                _uiState.value =
+                    _uiState.value?.copy(isLoading = false, errorMessage = msg)
+                        ?: CoinsListUiState(isLoading = false, errorMessage = msg)
             }
+        }
+    }
+
+    fun onErrorShown() {
+        val cur = _uiState.value ?: CoinsListUiState()
+        if (cur.errorMessage != null) {
+            _uiState.value = cur.copy(errorMessage = null)
         }
     }
 
