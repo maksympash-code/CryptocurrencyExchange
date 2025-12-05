@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CryptocurrencyExchange">
         <activity
+            android:name=".presentation.coindetails.CoinDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.MainActivity"
             android:exported="true">
             <intent-filter>

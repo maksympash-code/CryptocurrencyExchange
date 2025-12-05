@@ -7,10 +7,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptocurrencyexchange.R
+import com.example.cryptocurrencyexchange.domain.Coin
 import com.example.cryptocurrencyexchange.presentation.CoinUi
 import com.squareup.picasso.Picasso
 
-class CoinsAdapter: RecyclerView.Adapter<CoinsAdapter.CoinViewHolder>() {
+class CoinsAdapter(
+    private val onItemClick: (CoinUi) -> Unit
+): RecyclerView.Adapter<CoinsAdapter.CoinViewHolder>() {
 
     private val items = mutableListOf<CoinUi>()
 
@@ -57,6 +60,10 @@ class CoinsAdapter: RecyclerView.Adapter<CoinsAdapter.CoinViewHolder>() {
                 .into(holder.ivIcon)
         } else {
             holder.ivIcon.setImageDrawable(null)
+        }
+
+        holder.itemView.setOnClickListener {
+            onItemClick(item)
         }
     }
 

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptocurrencyexchange.data.ServiceLocator
 import com.example.cryptocurrencyexchange.databinding.ActivityMainBinding
+import com.example.cryptocurrencyexchange.presentation.coindetails.CoinDetailsActivity
 import com.example.cryptocurrencyexchange.presentation.coinslist.CoinsAdapter
 import com.example.cryptocurrencyexchange.presentation.coinslist.CoinsListUiState
 import com.example.cryptocurrencyexchange.presentation.coinslist.CoinsListViewModel
@@ -19,7 +20,12 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
-    private val coinsAdapter = CoinsAdapter()
+    private val coinsAdapter by lazy {
+        CoinsAdapter { coin ->
+            val intent = CoinDetailsActivity.newIntent(this, coin)
+            startActivity(intent)
+        }
+    }
 
     private val serviceLocator by lazy{
         ServiceLocator(applicationContext)
