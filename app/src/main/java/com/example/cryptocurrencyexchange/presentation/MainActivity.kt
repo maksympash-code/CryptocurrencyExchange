@@ -1,6 +1,7 @@
 package com.example.cryptocurrencyexchange.presentation
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -45,6 +46,10 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@MainActivity)
         }
 
+        binding.btnRefresh.setOnClickListener {
+            viewModel.refresh()
+        }
+
         viewModel.uiState.observe(this) { state ->
             render(state)
         }
@@ -52,6 +57,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun render(state: CoinsListUiState) {
         coinsAdapter.submit(state.coins)
+
+        binding.btnRefresh.isEnabled = !state.isLoading
+        binding.progressBar.visibility = if (state.isLoading) View.VISIBLE else View.GONE
 
         if (state.errorMessage != null) {
             Toast.makeText(this, state.errorMessage, Toast.LENGTH_SHORT).show()
